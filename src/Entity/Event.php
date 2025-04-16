@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\Table(name: 'event')]
@@ -19,33 +20,44 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Le titre est requis.")]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank(message: "La description est requise.")]
     private ?string $description = null;
 
     #[ORM\Column(name: 'dateDebut', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\NotNull(message: "La date de début est requise.")]
+    #[Assert\Type(type: \DateTimeInterface::class)]
+    #[Assert\GreaterThan('now', message: "La date de début doit être dans le futur.")]
     private ?\DateTimeInterface $dateDebut = null;
 
     #[ORM\Column(name: 'dateFin', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\NotNull(message: "La date de fin est requise.")]
+    #[Assert\Type(type: \DateTimeInterface::class)]
+    #[Assert\GreaterThan(propertyPath: 'dateDebut', message: "La date de fin doit être après la date de début.")]
     private ?\DateTimeInterface $dateFin = null;
 
     #[ORM\Column(length: 255, nullable: true, enumType: GouvernoratEnum::class)]
+    #[Assert\NotNull(message: "Le lieu est requis.")]
     private ?GouvernoratEnum $lieu = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le statut est requis.")]
     private string $statut = 'A_VENIR';
 
     #[ORM\Column(length: 250)]
+    #[Assert\NotBlank(message: "L'état est requis.")]
     private string $state;
 
     #[ORM\Column(name: 'trottinetteMinAutonomie', nullable: true)]
+    #[Assert\NotNull(message: "L'autonomie minimale est requise.")]
+    #[Assert\GreaterThanOrEqual(0, message: "L'autonomie minimale doit être ≥ 0.")]
     private ?int $trottinetteMinAutonomie = 0;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Participation::class, orphanRemoval: true)]
     private Collection $participations;
-
-    private ?GouvernoratEnum $gouvernorat = null;
 
     public function __construct()
     {
@@ -166,7 +178,6 @@ class Event
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
             if ($participation->getEvent() === $this) {
                 $participation->setEvent(null);
             }
@@ -175,38 +186,14 @@ class Event
         return $this;
     }
 
-    public function getGouvernorat(): ?GouvernoratEnum
-    {
-        return $this->gouvernorat;
-    }
-
-    public function setGouvernorat(?GouvernoratEnum $gouvernorat): self
-    {
-        $this->gouvernorat = $gouvernorat;
-        return $this;
-    }
-
-    /**
-     * Helper method to get gouvernorat as string
-     */
-    public function getGouvernoratAsString(): ?string
-    {
-        return $this->gouvernorat ? $this->gouvernorat->value : null;
-    }
-    
-    /**
-     * Helper method to get lieu as string
-     */
     public function getLieuAsString(): ?string
     {
-        return $this->lieu ? $this->lieu->value : null;
+        return $this->lieu?->value;
     }
-    
-    /**
-     * Make sure the lieu can be properly converted to string
-     */
+
     public function __toString(): string
     {
         return $this->getLieuAsString() ?? '';
     }
 }
+

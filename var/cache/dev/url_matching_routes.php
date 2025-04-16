@@ -18,6 +18,7 @@ return [
         '/admin/dashboard' => [[['_route' => 'app_admin_dashboard', '_controller' => 'App\\Controller\\AdminController::dashboard'], null, null, null, false, false, null]],
         '/admin/events' => [[['_route' => 'app_admin_events', '_controller' => 'App\\Controller\\AdminController::events'], null, null, null, false, false, null]],
         '/admin/events/new' => [[['_route' => 'app_admin_event_new', '_controller' => 'App\\Controller\\AdminController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        '/event/public' => [[['_route' => 'app_event_list', '_controller' => 'App\\Controller\\EventController::publicList'], null, ['GET' => 0], null, false, false, null]],
         '/event' => [[['_route' => 'app_event_index', '_controller' => 'App\\Controller\\EventController::index'], null, ['GET' => 0], null, true, false, null]],
         '/event/new' => [[['_route' => 'app_event_new', '_controller' => 'App\\Controller\\EventController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
         '/' => [[['_route' => 'app_home', '_controller' => 'App\\Controller\\PublicEventController::index'], null, null, null, false, false, null]],
@@ -58,12 +59,13 @@ return [
                                 .'|nts(*:323)'
                             .')'
                             .'|edit(*:336)'
+                            .'|cancel(*:350)'
                         .')'
-                        .'|(*:345)'
+                        .'|(*:359)'
                     .')'
                     .'|s/([^/]++)(?'
-                        .'|(*:367)'
-                        .'|/participate(*:387)'
+                        .'|(*:381)'
+                        .'|/participate(*:401)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -83,12 +85,13 @@ return [
         312 => [[['_route' => 'app_event_participate', '_controller' => 'App\\Controller\\EventController::participate'], ['id'], ['POST' => 0], null, false, false, null]],
         323 => [[['_route' => 'app_event_participants', '_controller' => 'App\\Controller\\EventController::participants'], ['id'], ['GET' => 0], null, false, false, null]],
         336 => [[['_route' => 'app_event_edit', '_controller' => 'App\\Controller\\EventController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        345 => [
+        350 => [[['_route' => 'app_event_cancel', '_controller' => 'App\\Controller\\EventController::cancel'], ['id'], ['POST' => 0], null, false, false, null]],
+        359 => [
             [['_route' => 'app_event_show', '_controller' => 'App\\Controller\\EventController::show'], ['id'], ['GET' => 0], null, false, true, null],
             [['_route' => 'app_event_delete', '_controller' => 'App\\Controller\\EventController::delete'], ['id'], ['POST' => 0], null, false, true, null],
         ],
-        367 => [[['_route' => 'app_public_event_show', '_controller' => 'App\\Controller\\PublicEventController::show'], ['id'], null, null, false, true, null]],
-        387 => [
+        381 => [[['_route' => 'app_public_event_show', '_controller' => 'App\\Controller\\PublicEventController::show'], ['id'], null, null, false, true, null]],
+        401 => [
             [['_route' => 'app_public_event_participate', '_controller' => 'App\\Controller\\PublicEventController::participate'], ['id'], ['POST' => 0], null, false, false, null],
             [null, null, null, null, false, false, 0],
         ],

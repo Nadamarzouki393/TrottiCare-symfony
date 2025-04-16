@@ -3,12 +3,13 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use App\Enum\GouvernoratEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use App\Enum\GouvernoratEnum;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,7 +24,7 @@ class EventType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'required' => false,
+                'required' => true,
             ])
             ->add('dateDebut', DateTimeType::class, [
                 'label' => 'Date de début',
@@ -42,9 +43,9 @@ class EventType extends AbstractType
                 'choice_label' => fn(GouvernoratEnum $enum) => $enum->value,
                 'placeholder' => 'Choisir un gouvernorat',
             ])
-            ->add('trottinetteMinAutonomie', TextType::class, [
+            ->add('trottinetteMinAutonomie', IntegerType::class, [
                 'label' => 'Autonomie minimale de la trottinette',
-                'required' => false,
+                'required' => true,
             ]);
     }
 
